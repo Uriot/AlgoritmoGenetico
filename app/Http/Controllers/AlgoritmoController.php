@@ -11,6 +11,7 @@ class AlgoritmoController extends Controller
     public $generaciones = 20;
     public $probabilidadCruce = 0.98;
     public $probabilidadMutacion = 0.1;
+    public $camion = 20000;
 
     public function index()
     {
@@ -22,11 +23,14 @@ class AlgoritmoController extends Controller
             $algoritmo = new Algoritmo();
             $ovejasGeneradas = $algoritmo->generarOvejas($ovejas, $pesoMinimo, $pesoMaximo);
 
-            $pesoTotal = $algoritmo->pesoTotal($ovejasGeneradas);
-            $array = json_encode($ovejasGeneradas);
+
 
             $ovejasConHijos = $this->seleccion($ovejasGeneradas);
-            return view('algoritmo', compact('ovejasGeneradas', 'ovejasConHijos'));
+
+            $elegidos = $this->seleccionar($ovejasConHijos);
+            $pesoTotal = $algoritmo->pesoTotal($elegidos);
+
+            return view('algoritmo', compact('ovejasGeneradas', 'ovejasConHijos', 'elegidos', 'pesoTotal' ));
         }
 
         return view('algoritmo');
@@ -102,9 +106,8 @@ class AlgoritmoController extends Controller
             }
             $ovejasGeneradas = $this->mutacion($ovejasGeneradas, $cromosomaPadre[0], $cromosomaPadre[1]);
 
-            // $this->mutacion($ovejasGeneradas, $cromosomaPadre[0], $cromosomaPadre[1]);
+
         }
-        // $ovejasGeneradas =  $this->mutacion($ovejasGeneradas, $cromosomaPadre[0], $cromosomaPadre[1]);
         return $ovejasGeneradas;
     }
 
@@ -133,7 +136,32 @@ class AlgoritmoController extends Controller
 
             $masOvejas = array_merge($ovejasGeneradas, $nuevasOvejas);
         }
-
         return $masOvejas;
     }
+
+    public function seleccionar($ovejas)
+    {
+        usort($ovejas, function ($a, $b) {
+                return $a['peso'] - $b['peso'];
+        });
+
+        $sumaTotal = new Algoritmo();
+        $sumaTotal = $sumaTotal->pesoTotal($ovejas);
+
+        if ($sumaTotal > $this->camion) {
+            $peso = 0;
+            foreach ($ovejas as $oveja) {
+                $peso += $oveja['peso'];
+                if ($peso < $this->camion) {
+                    $ovejasConPeso[] = $oveja;
+                } else {
+                    break;
+                }
+            }
+            return $ovejasConPeso;
+        } else {
+            return $ovejas;
+        }
+    }
+
 }

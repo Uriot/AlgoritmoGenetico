@@ -117,5 +117,50 @@
         <?php endif ?>
     </div>
 
+    </div>
+    <br><br>
+    <hr>
+
+    <div class="container text-center">
+        <?php if (isset($elegidos)): ?>
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th scope="col" colspan="8">las ovejas elegidas para el camion son</th>
+                </tr>
+                <tr>
+                    <th scope="col" colspan="3">ovejas</th>
+                    <th scope="col" colspan="5">cromosomas</th>
+                </tr>
+                <tr>
+                    <th scope="col">No. Oveja</th>
+                    <th scope="col">Peso</th>
+                    <th scope="col">Precio</th>
+                    <th scope="col">Pelaje</th>
+                    <th scope="col">Color</th>
+                    <th scope="col">Leche</th>
+                    <th scope="col">Grande</th>
+                    <th scope="col">protectora</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($elegidos as $i => $data): ?>
+                    <tr>
+                        <th scope="col"><?=$i+1?></th>
+                        <th scope="col"><?=$data['peso']?> lbs</th>
+                        <th scope="col">Q. <?=$data['precio']?></th>
+                        <th scope="col"><?=$data['pelaje']?></th>
+                        <th scope="col"><?=$data['color']?></th>
+                        <th scope="col"><?=$data['leche']?></th>
+                        <th scope="col"><?=$data['grande']?></th>
+                        <th scope="col"><?=$data['protectora']?></th>
+                    </tr>
+                <?php endforeach ?>
+            </tbody>
+        </table>
+        <p>El peso total de las elegidas es <?=$pesoTotal?></p>
+        <?php endif ?>
+    </div>
+
 </body>
 </html>
