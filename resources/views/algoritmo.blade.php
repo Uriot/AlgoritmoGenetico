@@ -74,6 +74,8 @@
         </table>
         <?php endif ?>
     </div>
+    <br><br>
+    <hr>
 
     <div class="container text-center">
         <?php if (isset($ovejasConHijos)): ?>

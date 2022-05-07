@@ -8,7 +8,7 @@ use PhpParser\Node\Stmt\Switch_;
 
 class AlgoritmoController extends Controller
 {
-    public $generaciones = 50;
+    public $generaciones = 20;
     public $probabilidadCruce = 0.98;
     public $probabilidadMutacion = 0.1;
 
@@ -73,38 +73,44 @@ class AlgoritmoController extends Controller
 
     public function seleccion($ovejasGeneradas)
     {
-        $ovejasGeneradas = $this->evaluacion($ovejasGeneradas);
+        for ($k=0; $k < $this->generaciones ; $k++) {
+            $ovejasGeneradas = $this->evaluacion($ovejasGeneradas);
 
-        //! primera iteracion
-            $padre = 0;
-        for ($i = 0; $i < 2; $i++) {
-            $aleatorio = rand(1, 100);
-            $prob = (1 / $aleatorio);
-            for ($j = 0; $j < count($ovejasGeneradas); $j++) {
-                switch (true) {
-                    case $prob  >= $ovejasGeneradas[$j]['probabilidadAcumulada']:
-                        try {
-                            $cromosomaPadre[$padre] = $ovejasGeneradas[$j + 1];
-                        } catch (\Exception $e) {
+            //! primera iteracion
+                $padre = 0;
+            for ($i = 0; $i < 2; $i++) {
+                $aleatorio = rand(1, 100);
+                $prob = (1 / $aleatorio);
+                for ($j = 0; $j < count($ovejasGeneradas); $j++) {
+                    switch (true) {
+                        case $prob  >= $ovejasGeneradas[$j]['probabilidadAcumulada']:
+                            try {
+                                $cromosomaPadre[$padre] = $ovejasGeneradas[$j + 1];
+                            } catch (\Exception $e) {
+                                $cromosomaPadre[$padre] = $ovejasGeneradas[$j];
+                            }
+                            break;
+                        case $prob == $ovejasGeneradas[$j]['probabilidadAcumulada']:
                             $cromosomaPadre[$padre] = $ovejasGeneradas[$j];
-                        }
-                        break;
-                    case $prob == $ovejasGeneradas[$j]['probabilidadAcumulada']:
-                        $cromosomaPadre[$padre] = $ovejasGeneradas[$j];
-                        break;
-                    default:
-                        $cromosomaPadre[$padre] = $ovejasGeneradas[$j];
-                        break;
+                            break;
+                        default:
+                            $cromosomaPadre[$padre] = $ovejasGeneradas[$j];
+                            break;
+                    }
                 }
+                $padre++;
             }
-            $padre++;
+            $ovejasGeneradas = $this->mutacion($ovejasGeneradas, $cromosomaPadre[0], $cromosomaPadre[1]);
+
+            // $this->mutacion($ovejasGeneradas, $cromosomaPadre[0], $cromosomaPadre[1]);
         }
-        $ovejasGeneradas = $this->mutacion($ovejasGeneradas, $cromosomaPadre[0], $cromosomaPadre[1]);
+        // $ovejasGeneradas =  $this->mutacion($ovejasGeneradas, $cromosomaPadre[0], $cromosomaPadre[1]);
         return $ovejasGeneradas;
     }
 
     public function mutacion($ovejasGeneradas, $padre, $madre)
     {
+        $masOvejas = '';
         $aleatorio = rand(1, 100);
         $prob = (1 / $aleatorio);
 
