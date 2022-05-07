@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\AlgoritmoController;
+use App\Http\Controllers\MutacionController;
+use App\Models\Algoritmo;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +16,5 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::get('/', [AlgoritmoController::class, 'index'])->name('inicio');
+Route::post('/', [AlgoritmoController::class, 'mutacion'])->name('mutacion');
